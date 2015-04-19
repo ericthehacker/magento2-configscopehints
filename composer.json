@@ -1,0 +1,24 @@
+{
+    "name": "ericthehacker/magento2-configscopehints",
+    "description": "Magento 2 store config override hints module",
+    "require": {
+        "magento/magento-composer-installer": "*"
+    },
+    "type": "magento2-module",
+    "version": "2.0",
+    "extra": {
+        "map": [
+            [
+                "*",
+                "EW/ConfigScopeHints"
+            ]
+        ]
+    },
+    "authors": [
+        {
+            "name": "Eric Wiese",
+            "homepage": "https://ericwie.se/",
+            "role": "Developer"
+        }
+    ]
+}
