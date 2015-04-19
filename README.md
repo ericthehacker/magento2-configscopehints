@@ -4,6 +4,51 @@ This is a Magento 2 port of my [Magento 1 Config Scope Hints module](https://git
 
 This module shows information in the System Configuration when a field is overridden at more specific scope(s), along with information about these scope(s).
 
+## Installation
+
+This module can be installed manually or by using Composer (recommended).
+
+### Manual Installation
+
+First, download contents of this repo into `app/code/EW/ConfigScopeHints` using a command similar to the following in the Magento 2 root.
+```
+$ mkdir -p app/code/EW # create vendor directory
+$ wget https://github.com/ericthehacker/magento2-configscopehints/archive/master.zip # download zip of module contents
+$ unzip master.zip -d app/code/EW # unzip module into vendor directory
+$ mv app/code/EW/magento2-configscopehints-master app/code/EW/ConfigScopeHints # correct directory name
+$ rm master.zip # clean up zip file
+```
+
+Finally, enable module by running the following from the command line at the Magento 2 root.
+```
+$ php -f setup/index.php module-enable --modules=EW_ConfigScopeHints # enable module
+$ php -f setup/index.php update # flush appropriate caches
+```
+
+### Composer Installation
+
+First, add this repository to the `composer.json` file in your Magento 2 root.
+```
+"repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:ericthehacker/magento2-configscopehints.git"
+        }
+    ]
+```
+
+Second, require module by running the following from the command line at the Magento 2 root.
+```
+$ composer require ericthehacker/magento2-configscopehints
+```
+Finally, enable module by running the following from the command line at the Magento 2 root.
+```
+$ php -f setup/index.php module-enable --modules=EW_ConfigScopeHints # enable module
+$ php -f setup/index.php update # flush appropriate caches
+```
+
+Sit back and enjoy!
+
 ## Usage
 
 After installing the module, when viewing a system configuration field, an alert icon will be shown next to the field scope when the field's value is overridden at a more specific level.
@@ -13,3 +58,7 @@ The icon is only shown when the value is overridden at a more specific scope tha
 Clicking on the notification bulb displays a detailed list of the exact scope(s) that override the value, with links directly to those scopes.
 
 ![Screenshot of system config scope hints module](https://ericwie.se/assets/img/work/magento2-configscopehints.png?v=1)
+
+## Compatibility and Technical Notes
+
+This module was written and tested against version [0.74.0-beta4](https://github.com/magento/magento2/releases/tag/0.74.0-beta4). The hints are accomplished using intercepters, so there should be no compatibility concerns ([unlike Magento 1](https://github.com/ericthehacker/magento-configscopehints#rewrites)). This version is post-RC2, so the intercepters API should stable at this point.
