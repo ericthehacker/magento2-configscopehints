@@ -1,0 +1,36 @@
+a.overridden-hint-list-toggle {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    line-height: 16px;
+    margin-left: 5px;
+    text-decoration: none;
+
+    &:hover, &:active, &:visited, &:focus {
+        text-decoration: inherit;
+    }
+
+    > span {
+        text-indent: -9999px;
+        white-space: nowrap;
+        display: inline-block;
+    }
+
+    &::before {
+        color: #eb5202;
+        content: '\e623';
+        font-family: "Admin Icons";
+    }
+}
+
+.overridden-hint-list {
+    display: none;
+
+    li {
+        display: inherit;
+    }
+
+    &.visible {
+        display: block;
+    }
+}
