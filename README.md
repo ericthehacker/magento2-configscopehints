@@ -11,3 +11,5 @@ After installing the module, when viewing a system configuration field, an alert
 The icon is only shown when the value is overridden at a more specific scope than the current one – that is, if viewing at the default scope, overrides at the website or store view level are shown, but if viewing at the website level, only overrides below the currently selected website are shown.
 
 Clicking on the notification bulb displays a detailed list of the exact scope(s) that override the value, with links directly to those scopes.
+
+![Screenshot of system config scope hints module](https://ericwie.se/assets/img/work/magento2-configscopehints.png?v=1)
