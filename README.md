@@ -27,21 +27,18 @@ $ php -f setup/index.php update # flush appropriate caches
 
 ### Composer Installation
 
-First, add this repository to the `composer.json` file in your Magento 2 root.
+Each of these commands should be run from the command line at the Magento 2 root.
+
+First, add this repository to your `composer.json` by running the following.
 ```
-"repositories": [
-        {
-            "type": "vcs",
-            "url": "git@github.com:ericthehacker/magento2-configscopehints.git"
-        }
-    ]
+$ composer config repositories.magento2-configscopehints vcs https://github.com/ericthehacker/magento2-configscopehints.git
 ```
 
-Second, require module by running the following from the command line at the Magento 2 root.
+Second, require module by running the following.
 ```
 $ composer require ericthehacker/magento2-configscopehints
 ```
-Finally, enable module by running the following from the command line at the Magento 2 root.
+Finally, enable module by running the following.
 ```
 $ php -f setup/index.php module-enable --modules=EW_ConfigScopeHints # enable module
 $ php -f setup/index.php update # flush appropriate caches
