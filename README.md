@@ -21,7 +21,7 @@ $ rm master.zip # clean up zip file
 
 Finally, enable module by running the following from the command line at the Magento 2 root.
 ```
-$ php -f bin/magento module:enable Vendor_ModuleName 
+$ php -f bin/magento module:enable EW_ConfigScopeHints 
 $ php -f bin/magento setup:upgrade
 ```
 
@@ -38,7 +38,7 @@ $ composer config repositories.magento2-configscopehints vcs https://github.com/
 $ composer require ericthehacker/magento2-configscopehints
 
 # enable module
-$ php -f bin/magento module:enable Vendor_ModuleName 
+$ php -f bin/magento module:enable EW_ConfigScopeHints 
 $ php -f bin/magento setup:upgrade
 ```
 
