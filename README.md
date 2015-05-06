@@ -21,8 +21,8 @@ $ rm master.zip # clean up zip file
 
 Finally, enable module by running the following from the command line at the Magento 2 root.
 ```
-$ php -f setup/index.php module-enable --modules=EW_ConfigScopeHints # enable module
-$ php -f setup/index.php update # flush appropriate caches
+$ php -f bin/magento module:enable Vendor_ModuleName 
+$ php -f bin/magento setup:upgrade
 ```
 
 ### Composer Installation
@@ -31,17 +31,15 @@ Each of these commands should be run from the command line at the Magento 2 root
 
 First, add this repository to your `composer.json` by running the following.
 ```
+# add this repository to your composer.json
 $ composer config repositories.magento2-configscopehints vcs https://github.com/ericthehacker/magento2-configscopehints.git
-```
 
-Second, require module by running the following.
-```
+# require module
 $ composer require ericthehacker/magento2-configscopehints
-```
-Finally, enable module by running the following.
-```
-$ php -f setup/index.php module-enable --modules=EW_ConfigScopeHints # enable module
-$ php -f setup/index.php update # flush appropriate caches
+
+# enable module
+$ php -f bin/magento module:enable Vendor_ModuleName 
+$ php -f bin/magento setup:upgrade
 ```
 
 Sit back and enjoy!
