@@ -4,12 +4,13 @@ namespace EW\ConfigScopeHints\Helper;
 use \Magento\Store\Model\Website;
 use \Magento\Store\Model\Store;
 
-class Data extends  \Magento\Framework\App\Helper\AbstractHelper
+class Data extends \Magento\Framework\App\Helper\AbstractHelper
 {
     /** @var \Magento\Framework\App\Helper\Context */
-    protected $_context;
+    protected $context;
+
     /** @var \Magento\Store\Model\StoreManagerInterface */
-    protected $_storeManger;
+    protected $storeManager;
 
     /**
      * @param \Magento\Framework\App\Helper\Context $context
@@ -17,10 +18,10 @@ class Data extends  \Magento\Framework\App\Helper\AbstractHelper
      */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
-        \Magento\Store\Model\StoreManagerInterface $storeManager
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
     ) {
-        $this->_storeManger = $storeManager;
-        $this->_context = $context;
+        $this->storeManager = $storeManager;
+        $this->context = $context;
     }
 
     /**
@@ -32,7 +33,7 @@ class Data extends  \Magento\Framework\App\Helper\AbstractHelper
     public function getScopeTree() {
         $tree = array('websites' => array());
 
-        $websites = $this->_storeManger->getWebsites();
+        $websites = $this->storeManager->getWebsites();
 
         /* @var $website Website */
         foreach($websites as $website) {
@@ -56,7 +57,7 @@ class Data extends  \Magento\Framework\App\Helper\AbstractHelper
      * @return mixed
      */
     protected function _getConfigValue($path, $contextScope, $contextScopeId) {
-        return $this->_context->getScopeConfig()->getValue($path, $contextScope, $contextScopeId);
+        return $this->context->getScopeConfig()->getValue($path, $contextScope, $contextScopeId);
     }
 
     /**
@@ -69,7 +70,7 @@ class Data extends  \Magento\Framework\App\Helper\AbstractHelper
      * @param $contextScopeId
      * @return array
      */
-    public function getOverridenLevels($path, $contextScope, $contextScopeId) {
+    public function getOverriddenLevels($path, $contextScope, $contextScopeId) {
         $tree = $this->getScopeTree();
 
         $currentValue = $this->_getConfigValue($path, $contextScope, $contextScopeId);
@@ -151,12 +152,12 @@ class Data extends  \Magento\Framework\App\Helper\AbstractHelper
                     $scopeLabel = sprintf(
                         'website <a href="%s">%s</a>',
                         $url,
-                        $this->_storeManger->getWebsite($scopeId)->getName()
+                        $this->storeManager->getWebsite($scopeId)->getName()
                     );
 
                     break;
                 case 'store':
-                    $store = $this->_storeManger->getStore($scopeId);
+                    $store = $this->storeManager->getStore($scopeId);
                     $website = $store->getWebsite();
                     $url = $this->_context->getUrlBuilder()->getUrl(
                         '*/*/*',
