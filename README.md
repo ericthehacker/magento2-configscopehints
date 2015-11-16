@@ -32,7 +32,7 @@ Each of these commands should be run from the command line at the Magento 2 root
 First, add this repository to your `composer.json` by running the following.
 ```
 # add this repository to your composer.json
-$ composer config repositories.magento2-configscopehints vcs https://github.com/ericthehacker/magento2-configscopehints.git
+$ composer config repositories.magento2-configscopehints git https://github.com/ericthehacker/magento2-configscopehints.git
 
 # require module
 $ composer require ericthehacker/magento2-configscopehints
@@ -56,4 +56,4 @@ Clicking on the notification bulb displays a detailed list of the exact scope(s)
 
 ## Compatibility and Technical Notes
 
-This module was written and tested against version [0.74.0-beta4](https://github.com/magento/magento2/releases/tag/0.74.0-beta4). The hints are accomplished using intercepters, so there should be no compatibility concerns ([unlike Magento 1](https://github.com/ericthehacker/magento-configscopehints#rewrites)). This version is post-RC2, so the intercepters API should stable at this point.
+This module was written and tested against version [2.0.0-rc](https://github.com/magento/magento2/releases/tag/2.0.0-rc). The hints are accomplished using intercepters, so there should be no compatibility concerns ([unlike Magento 1](https://github.com/ericthehacker/magento-configscopehints#rewrites)). This version is post-RC, so the intercepters API should stable at this point.

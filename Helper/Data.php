@@ -4,23 +4,37 @@ namespace EW\ConfigScopeHints\Helper;
 use \Magento\Store\Model\Website;
 use \Magento\Store\Model\Store;
 
-class Data extends  \Magento\Framework\App\Helper\AbstractHelper
+class Data extends \Magento\Framework\App\Helper\AbstractHelper
 {
     /** @var \Magento\Framework\App\Helper\Context */
-    protected $_context;
+    protected $context;
+
     /** @var \Magento\Store\Model\StoreManagerInterface */
-    protected $_storeManger;
+    protected $storeManager;
+
+    /**
+     * Url Builder
+     *
+     * @var \Magento\Backend\Model\Url
+     */
+    protected $urlBuilder;
 
     /**
      * @param \Magento\Framework\App\Helper\Context $context
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
+     * @param \Magento\Backend\Model\Url $urlBuilder
      */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
-        \Magento\Store\Model\StoreManagerInterface $storeManager
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \Magento\Backend\Model\Url $urlBuilder
     ) {
-        $this->_storeManger = $storeManager;
-        $this->_context = $context;
+        $this->storeManager = $storeManager;
+        $this->context = $context;
+        // Ideally we would just retrieve the urlBuilder using $this->content->getUrlBuilder(), but since it retrieves
+        // an instance of \Magento\Framework\Url instead of \Magento\Backend\Model\Url, we must explicitly request it
+        // via DI.
+        $this->urlBuilder = $urlBuilder;
     }
 
     /**
@@ -32,7 +46,7 @@ class Data extends  \Magento\Framework\App\Helper\AbstractHelper
     public function getScopeTree() {
         $tree = array('websites' => array());
 
-        $websites = $this->_storeManger->getWebsites();
+        $websites = $this->storeManager->getWebsites();
 
         /* @var $website Website */
         foreach($websites as $website) {
@@ -56,7 +70,7 @@ class Data extends  \Magento\Framework\App\Helper\AbstractHelper
      * @return mixed
      */
     protected function _getConfigValue($path, $contextScope, $contextScopeId) {
-        return $this->_context->getScopeConfig()->getValue($path, $contextScope, $contextScopeId);
+        return $this->context->getScopeConfig()->getValue($path, $contextScope, $contextScopeId);
     }
 
     /**
@@ -69,7 +83,7 @@ class Data extends  \Magento\Framework\App\Helper\AbstractHelper
      * @param $contextScopeId
      * @return array
      */
-    public function getOverridenLevels($path, $contextScope, $contextScopeId) {
+    public function getOverriddenLevels($path, $contextScope, $contextScopeId) {
         $tree = $this->getScopeTree();
 
         $currentValue = $this->_getConfigValue($path, $contextScope, $contextScopeId);
@@ -141,29 +155,28 @@ class Data extends  \Magento\Framework\App\Helper\AbstractHelper
             $section = $form->getSectionCode();
             switch($scope) {
                 case 'website':
-                    $url = $this->_context->getUrlBuilder()->getUrl(
+                    $url = $this->urlBuilder->getUrl(
                         '*/*/*',
                         array(
-                            'section'=>$section,
-                            'website'=>$scopeId
+                            'section' => $section,
+                            'website' => $scopeId
                         )
                     );
                     $scopeLabel = sprintf(
                         'website <a href="%s">%s</a>',
                         $url,
-                        $this->_storeManger->getWebsite($scopeId)->getName()
+                        $this->storeManager->getWebsite($scopeId)->getName()
                     );
 
                     break;
                 case 'store':
-                    $store = $this->_storeManger->getStore($scopeId);
+                    $store = $this->storeManager->getStore($scopeId);
                     $website = $store->getWebsite();
-                    $url = $this->_context->getUrlBuilder()->getUrl(
+                    $url = $this->urlBuilder->getUrl(
                         '*/*/*',
                         array(
                             'section'   => $section,
-                            'website'   => $website->getCode(),
-                            'store'     => $store->getCode()
+                            'store'     => $store->getId()
                         )
                     );
                     $scopeLabel = sprintf(

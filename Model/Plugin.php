@@ -7,13 +7,13 @@ use \Magento\Framework\Phrase;
 class Plugin
 {
     /** @var \EW\ConfigScopeHints\Helper\Data */
-    protected $_helper;
+    protected $helper;
 
     /**
      * @param \EW\ConfigScopeHints\Helper\Data $helper
      */
     public function __construct(\EW\ConfigScopeHints\Helper\Data $helper) {
-        $this->_helper = $helper;
+        $this->helper = $helper;
     }
 
     /**
@@ -37,13 +37,13 @@ class Plugin
                 $currentScopeId = $form->getStoreCode();
                 break;
         }
-        $overriddenLevels = $this->_helper->getOverridenLevels($field->getPath(), $form->getScope(), $currentScopeId);
+        $overriddenLevels = $this->helper->getOverriddenLevels($field->getPath(), $form->getScope(), $currentScopeId);
 
         /* @var $returnPhrase Phrase */
         $labelPhrase = $getScopeLabel($field);
 
         if(!empty($overriddenLevels)) {
-            $scopeHintText = $labelPhrase . $this->_helper->formatOverriddenScopes($form, $overriddenLevels);
+            $scopeHintText = $labelPhrase . $this->helper->formatOverriddenScopes($form, $overriddenLevels);
 
             // create new phrase, now that constituent strings are translated individually
             $labelPhrase = new Phrase($scopeHintText, $labelPhrase->getArguments());
