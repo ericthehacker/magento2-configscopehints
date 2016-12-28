@@ -136,11 +136,11 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * Get HTML output for override hint UI
      *
-     * @param \Magento\Config\Block\System\Config\Form $form
+     * @param string $section
      * @param array $overridden
      * @return string
      */
-    public function formatOverriddenScopes(\Magento\Config\Block\System\Config\Form $form, array $overridden) {
+    public function formatOverriddenScopes($section, array $overridden) {
         $title = __('This setting is overridden at a more specific scope. Click for details.');
 
         $formatted = '<a class="overridden-hint-list-toggle" title="'. $title .'" href="#"><span>'. $title .'</span></a>'.
@@ -152,7 +152,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             $scopeLabel = $scopeId;
 
             $url = '#';
-            $section = $form->getSectionCode();
             switch($scope) {
                 case 'website':
                     $url = $this->urlBuilder->getUrl(

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../lib/internal/Magento/Framework/ObjectManager/etc/config.xsd">
-    <type name="Magento\Config\Block\System\Config\Form">
-        <plugin name="configScopeHints" type="EW\ConfigScopeHints\Model\Plugin" sortOrder="100" />
+    <type name="Magento\Framework\Data\Form\Element\Fieldset">
+        <plugin name="ew_configscopehints" type="EW\ConfigScopeHints\Plugin\Framework\Data\Form\Element\Fieldset" sortOrder="100" />
     </type>
 </config>
