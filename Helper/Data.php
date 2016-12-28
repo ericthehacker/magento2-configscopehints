@@ -141,7 +141,9 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @return string
      */
     public function formatOverriddenScopes($section, array $overridden) {
-        $formatted = '<ul class="overridden-hint-list">';
+        $formatted = '<div class="overridden-hint-wrapper">' .
+            '<p class="lead-text">' . __('This config field is overridden at the following scope(s):') . '</p>' .
+            '<ul class="overridden-hint-list">';
 
         foreach($overridden as $overriddenScope) {
             $scope = $overriddenScope['scope'];
@@ -159,7 +161,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
                         )
                     );
                     $scopeLabel = __(
-                        'website <a href="%1">%2</a>',
+                        'Website <a href="%1">%2</a>',
                         $url,
                         $this->storeManager->getWebsite($scopeId)->getName()
                     );
@@ -176,17 +178,17 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
                         )
                     );
                     $scopeLabel = __(
-                        'store view <a href="%1">%2</a>',
+                        'Store view <a href="%1">%2</a>',
                         $url,
                         $website->getName() . ' / ' . $store->getName()
                     );
                     break;
             }
 
-            $formatted .= '<li class="' . $scope . '">'. __('Overridden on %1', $scopeLabel) .'</li>';
+            $formatted .= '<li class="' . $scope . '">'. $scopeLabel .'</li>';
         }
 
-        $formatted .= '</ul>';
+        $formatted .= '</ul></div>';
 
         return $formatted;
     }

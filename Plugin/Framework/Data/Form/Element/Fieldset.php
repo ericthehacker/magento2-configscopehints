@@ -55,7 +55,7 @@ class Fieldset
         );
 
         if(!empty($overriddenLevels)) {
-            $config['hint'] = $this->helper->formatOverriddenScopes($section, $overriddenLevels);
+            $config['comment'] .= $this->helper->formatOverriddenScopes($section, $overriddenLevels);
         }
 
         return $proceed($elementId, $type, $config, $after, $isAdvanced);

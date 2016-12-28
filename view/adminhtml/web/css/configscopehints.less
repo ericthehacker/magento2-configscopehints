@@ -1,16 +1,17 @@
-.overridden-hint-list {
-    list-style-type: none;
-}
+.overridden-hint-wrapper {
+    font-style: italic;
 
-.form-list .hint {
-    &:before {
-        color: #eb5202;
-        content: '\e623';
-        font-family: "Admin Icons";
-        display: block;
+    .lead-text {
+        &:before {
+            color: #eb5202;
+            content: '\e623';
+            font-family: "Admin Icons";
+            display: inline-block;
+            margin-right: 0.5em;
+        }
     }
 
-    display: inline-block;
-    height: 100%;
-    width: 100%;
+    .overridden-hint-list {
+        list-style-position: inside;
+    }
 }
