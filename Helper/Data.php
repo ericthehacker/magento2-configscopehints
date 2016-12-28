@@ -141,8 +141,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @return string
      */
     public function formatOverriddenScopes($section, array $overridden) {
-        $title = __('This setting is overridden at a more specific scope. Click for details.');
-
         $formatted = '<ul class="overridden-hint-list">';
 
         foreach($overridden as $overriddenScope) {
@@ -160,8 +158,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
                             'website' => $scopeId
                         )
                     );
-                    $scopeLabel = sprintf(
-                        'website <a href="%s">%s</a>',
+                    $scopeLabel = __(
+                        'website <a href="%1">%2</a>',
                         $url,
                         $this->storeManager->getWebsite($scopeId)->getName()
                     );
@@ -177,15 +175,15 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
                             'store'     => $store->getId()
                         )
                     );
-                    $scopeLabel = sprintf(
-                        'store view <a href="%s">%s</a>',
+                    $scopeLabel = __(
+                        'store view <a href="%1">%2</a>',
                         $url,
                         $website->getName() . ' / ' . $store->getName()
                     );
                     break;
             }
 
-            $formatted .= "<li class='$scope'>Overridden on $scopeLabel</li>";
+            $formatted .= '<li class="' . $scope . '">'. __('Overridden on %1', $scopeLabel) .'</li>';
         }
 
         $formatted .= '</ul>';
