@@ -1,36 +1,17 @@
-a.overridden-hint-list-toggle {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    line-height: 16px;
-    margin-left: 5px;
-    text-decoration: none;
+.overridden-hint-wrapper {
+    font-style: italic;
 
-    &:hover, &:active, &:visited, &:focus {
-        text-decoration: inherit;
+    .lead-text {
+        &:before {
+            color: #eb5202;
+            content: '\e623';
+            font-family: "Admin Icons";
+            display: inline-block;
+            margin-right: 0.5em;
+        }
     }
 
-    > span {
-        text-indent: -9999px;
-        white-space: nowrap;
-        display: inline-block;
-    }
-
-    &::before {
-        color: #eb5202;
-        content: '\e623';
-        font-family: "Admin Icons";
-    }
-}
-
-.overridden-hint-list {
-    display: none;
-
-    li {
-        display: inherit;
-    }
-
-    &.visible {
-        display: block;
+    .overridden-hint-list {
+        list-style-position: inside;
     }
 }

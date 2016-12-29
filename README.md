@@ -1,12 +1,26 @@
-# EW/ConfigScopeHints
+# EW_ConfigScopeHints
 
-This is a Magento 2 port of my [Magento 1 Config Scope Hints module](https://github.com/ericthehacker/magento-configscopehints).
-
-This module shows information in the System Configuration when a field is overridden at more specific scope(s), along with information about these scope(s).
+This module shows information in the Store Configuration backend UI when a config field is overridden at more specific scope(s), along with information about these scope(s).
 
 ## Installation
 
 This module can be installed manually or by using Composer (recommended).
+
+### Composer Installation
+
+Each of these commands should be run from the command line at the Magento 2 root.
+
+```bash
+# add this repository to your composer.json
+$ composer config repositories.magento2-configscopehints git https://github.com/ericthehacker/magento2-configscopehints.git
+
+# require module
+$ composer require ericthehacker/magento2-configscopehints
+
+# enable module
+$ php -f bin/magento module:enable EW_ConfigScopeHints 
+$ php -f bin/magento setup:upgrade
+```
 
 ### Manual Installation
 
@@ -21,23 +35,8 @@ $ rm master.zip # clean up zip file
 ```
 
 Finally, enable module by running the following from the command line at the Magento 2 root.
-```
-$ php -f bin/magento module:enable EW_ConfigScopeHints 
-$ php -f bin/magento setup:upgrade
-```
-
-### Composer Installation
-
-Each of these commands should be run from the command line at the Magento 2 root.
 
 ```bash
-# add this repository to your composer.json
-$ composer config repositories.magento2-configscopehints git https://github.com/ericthehacker/magento2-configscopehints.git
-
-# require module
-$ composer require ericthehacker/magento2-configscopehints:~2.1
-
-# enable module
 $ php -f bin/magento module:enable EW_ConfigScopeHints 
 $ php -f bin/magento setup:upgrade
 ```
@@ -46,14 +45,28 @@ Sit back and enjoy!
 
 ## Usage
 
-After installing the module, when viewing a system configuration field, an alert icon will be shown next to the field scope when the field's value is overridden at a more specific level.
+After installing the module, when viewing a system configuration field, an alert icon and message will be shown below the field value if it has been overridden at a more specific scope.
 
 The icon is only shown when the value is overridden at a more specific scope than the current one – that is, if viewing at the default scope, overrides at the website or store view level are shown, but if viewing at the website level, only overrides below the currently selected website are shown.
 
-Clicking on the notification bulb displays a detailed list of the exact scope(s) that override the value, with links directly to those scopes.
+Along with the alert message, a detailed list of the exact scope(s) that override the value, with links directly to the store config for the current section at those scopes.
 
-![Screenshot of system config scope hints module](https://ericwie.se/assets/img/work/magento2-configscopehints.png?v=1)
+![Screenshot of system config scope hints module](https://ericisaweso.me/images/magento2-configscopehints-v3.png)
 
 ## Compatibility and Technical Notes
 
-This module was written and tested against version [2.0.0-rc](https://github.com/magento/magento2/releases/tag/2.0.0-rc). The hints are accomplished using intercepters, so there should be no compatibility concerns ([unlike Magento 1](https://github.com/ericthehacker/magento-configscopehints#rewrites)). This version is post-RC, so the intercepters API should stable at this point.
+Version 3.0.0 of this module has been tested against Magento 2.1.x. It's likely compatible with 2.0.x as well, but this is untested.
+
+> NOTE: For known compatibility with 2.0.x, check out version [2.1.0][2.1.0] of the module.
+
+## Known Issues
+
+### MAGETWO-62648
+
+When used on Magento 2.1.3, the module can produce a false positive when viewing a website scope. If a given config value has been overridden at this website scope, any children store views which have "Use Website" set for the value will incorrectly show as being overridden. 
+
+This is a known [core bug][MAGETWO-62648].
+
+
+[2.1.0]: https://github.com/ericthehacker/magento2-configscopehints/releases/tag/v2.1.0
+[MAGETWO-62648]: https://github.com/magento/magento2/issues/7943

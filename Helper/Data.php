@@ -29,6 +29,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Backend\Model\Url $urlBuilder
     ) {
+        parent::__construct($context);
+
         $this->storeManager = $storeManager;
         $this->context = $context;
         // Ideally we would just retrieve the urlBuilder using $this->content->getUrlBuilder(), but since it retrieves
@@ -136,14 +138,13 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * Get HTML output for override hint UI
      *
-     * @param \Magento\Config\Block\System\Config\Form $form
+     * @param string $section
      * @param array $overridden
      * @return string
      */
-    public function formatOverriddenScopes(\Magento\Config\Block\System\Config\Form $form, array $overridden) {
-        $title = __('This setting is overridden at a more specific scope. Click for details.');
-
-        $formatted = '<a class="overridden-hint-list-toggle" title="'. $title .'" href="#"><span>'. $title .'</span></a>'.
+    public function formatOverriddenScopes($section, array $overridden) {
+        $formatted = '<div class="overridden-hint-wrapper">' .
+            '<p class="lead-text">' . __('This config field is overridden at the following scope(s):') . '</p>' .
             '<ul class="overridden-hint-list">';
 
         foreach($overridden as $overriddenScope) {
@@ -152,7 +153,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             $scopeLabel = $scopeId;
 
             $url = '#';
-            $section = $form->getSectionCode();
             switch($scope) {
                 case 'website':
                     $url = $this->urlBuilder->getUrl(
@@ -162,8 +162,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
                             'website' => $scopeId
                         )
                     );
-                    $scopeLabel = sprintf(
-                        'website <a href="%s">%s</a>',
+                    $scopeLabel = __(
+                        'Website <a href="%1">%2</a>',
                         $url,
                         $this->storeManager->getWebsite($scopeId)->getName()
                     );
@@ -179,18 +179,18 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
                             'store'     => $store->getId()
                         )
                     );
-                    $scopeLabel = sprintf(
-                        'store view <a href="%s">%s</a>',
+                    $scopeLabel = __(
+                        'Store view <a href="%1">%2</a>',
                         $url,
                         $website->getName() . ' / ' . $store->getName()
                     );
                     break;
             }
 
-            $formatted .= "<li class='$scope'>Overridden on $scopeLabel</li>";
+            $formatted .= '<li class="' . $scope . '">'. $scopeLabel .'</li>';
         }
 
-        $formatted .= '</ul>';
+        $formatted .= '</ul></div>';
 
         return $formatted;
     }
