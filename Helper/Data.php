@@ -6,6 +6,9 @@ use \Magento\Store\Model\Store;
 
 class Data extends \Magento\Framework\App\Helper\AbstractHelper
 {
+    const STORE_VIEW_SCOPE_CODE = 'stores';
+    const WEBSITE_SCOPE_CODE = 'websites';
+
     /** @var \Magento\Framework\App\Helper\Context */
     protected $context;
 
@@ -46,17 +49,17 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @return array
      */
     public function getScopeTree() {
-        $tree = array('websites' => array());
+        $tree = array(self::WEBSITE_SCOPE_CODE => array());
 
         $websites = $this->storeManager->getWebsites();
 
         /* @var $website Website */
         foreach($websites as $website) {
-            $tree['websites'][$website->getId()] = array('stores' => array());
+            $tree[self::WEBSITE_SCOPE_CODE][$website->getId()] = array(self::STORE_VIEW_SCOPE_CODE => array());
 
             /* @var $store Store */
             foreach($website->getStores() as $store) {
-                $tree['websites'][$website->getId()]['stores'][] = $store->getId();
+                $tree[self::WEBSITE_SCOPE_CODE][$website->getId()][self::STORE_VIEW_SCOPE_CODE][] = $store->getId();
             }
         }
 
@@ -66,13 +69,27 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * Wrapper method to get config value at path, scope, and scope code provided
      *
-     * @param $path
-     * @param $contextScope
-     * @param $contextScopeId
-     * @return mixed
+     * @param string $path
+     * @param string $contextScope
+     * @param string|int $contextScopeId
+     * @return string
      */
     protected function _getConfigValue($path, $contextScope, $contextScopeId) {
         return $this->context->getScopeConfig()->getValue($path, $contextScope, $contextScopeId);
+    }
+
+    /**
+     * Gets human-friendly display value for given config path
+     *
+     * @param string $path
+     * @param string $contextScope
+     * @param string|int $contextScopeId
+     * @return string
+     */
+    public function getConfigDisplayValue($path, $contextScope, $contextScopeId) {
+        $value = $this->_getConfigValue($path, $contextScope, $contextScopeId);
+
+        return $value; //@todo
     }
 
     /**
@@ -97,34 +114,40 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $overridden = array();
 
         switch($contextScope) {
-            case 'websites':
-                $stores = array_values($tree['websites'][$contextScopeId]['stores']);
+            case self::WEBSITE_SCOPE_CODE:
+                $stores = array_values($tree[self::WEBSITE_SCOPE_CODE][$contextScopeId][self::STORE_VIEW_SCOPE_CODE]);
                 foreach($stores as $storeId) {
-                    $value = $this->_getConfigValue($path, 'stores', $storeId);
+                    $value = $this->_getConfigValue($path, self::STORE_VIEW_SCOPE_CODE, $storeId);
                     if($value != $currentValue) {
                         $overridden[] = array(
                             'scope'     => 'store',
-                            'scope_id'  => $storeId
+                            'scope_id'  => $storeId,
+                            'value' => $value,
+                            'display_value' => $this->getConfigDisplayValue($path, self::STORE_VIEW_SCOPE_CODE, $storeId)
                         );
                     }
                 }
                 break;
             case 'default':
-                foreach($tree['websites'] as $websiteId => $website) {
-                    $websiteValue = $this->_getConfigValue($path, 'websites', $websiteId);
+                foreach($tree[self::WEBSITE_SCOPE_CODE] as $websiteId => $website) {
+                    $websiteValue = $this->_getConfigValue($path, self::WEBSITE_SCOPE_CODE, $websiteId);
                     if($websiteValue != $currentValue) {
                         $overridden[] = array(
                             'scope'     => 'website',
-                            'scope_id'  => $websiteId
+                            'scope_id'  => $websiteId,
+                            'value' => $websiteValue,
+                            'display_value' => $this->getConfigDisplayValue($path, self::WEBSITE_SCOPE_CODE, $websiteId)
                         );
                     }
 
-                    foreach($website['stores'] as $storeId) {
-                        $value = $this->_getConfigValue($path, 'stores', $storeId);
+                    foreach($website[self::STORE_VIEW_SCOPE_CODE] as $storeId) {
+                        $value = $this->_getConfigValue($path, self::STORE_VIEW_SCOPE_CODE, $storeId);
                         if($value != $currentValue && $value != $websiteValue) {
                             $overridden[] = array(
                                 'scope'     => 'store',
-                                'scope_id'  => $storeId
+                                'scope_id'  => $storeId,
+                                'value' => $value,
+                                'display_value' => $this->getConfigDisplayValue($path, self::STORE_VIEW_SCOPE_CODE, $storeId)
                             );
                         }
                     }
@@ -145,11 +168,13 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     public function formatOverriddenScopes($section, array $overridden) {
         $formatted = '<div class="overridden-hint-wrapper">' .
             '<p class="lead-text">' . __('This config field is overridden at the following scope(s):') . '</p>' .
-            '<ul class="overridden-hint-list">';
+            '<dl class="overridden-hint-list">';
 
         foreach($overridden as $overriddenScope) {
             $scope = $overriddenScope['scope'];
             $scopeId = $overriddenScope['scope_id'];
+            $value = $overriddenScope['value'];
+            $valueLabel = $overriddenScope['display_value'];
             $scopeLabel = $scopeId;
 
             $url = '#';
@@ -187,10 +212,14 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
                     break;
             }
 
-            $formatted .= '<li class="' . $scope . '">'. $scopeLabel .'</li>';
+            $formatted .=
+                '<dt class="override-scope ' . $scope . '" title="'. __('Click to see overridden value') .'">'
+                    . $scopeLabel .
+                '</dt>' .
+                '<dd class="override-value">' . $valueLabel . '</dd>';
         }
 
-        $formatted .= '</ul></div>';
+        $formatted .= '</dl></div>';
 
         return $formatted;
     }

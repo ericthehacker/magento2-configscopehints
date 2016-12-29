@@ -11,7 +11,13 @@
         }
     }
 
-    .overridden-hint-list {
-        list-style-position: inside;
+    .override-scope {
+        cursor: pointer;
+    }
+
+    .override-value {
+        &.visible {
+            display: block;
+        }
     }
 }
