@@ -29,6 +29,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Backend\Model\Url $urlBuilder
     ) {
+        parent::__construct($context);
+
         $this->storeManager = $storeManager;
         $this->context = $context;
         // Ideally we would just retrieve the urlBuilder using $this->content->getUrlBuilder(), but since it retrieves
