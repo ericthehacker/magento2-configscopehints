@@ -11,7 +11,8 @@ This module can be installed manually or by using Composer (recommended).
 ### Manual Installation
 
 First, download contents of this repo into `app/code/EW/ConfigScopeHints` using a command similar to the following in the Magento 2 root.
-```
+
+```bash
 $ mkdir -p app/code/EW # create vendor directory
 $ wget https://github.com/ericthehacker/magento2-configscopehints/archive/master.zip # download zip of module contents
 $ unzip master.zip -d app/code/EW # unzip module into vendor directory
@@ -29,13 +30,12 @@ $ php -f bin/magento setup:upgrade
 
 Each of these commands should be run from the command line at the Magento 2 root.
 
-First, add this repository to your `composer.json` by running the following.
-```
+```bash
 # add this repository to your composer.json
 $ composer config repositories.magento2-configscopehints git https://github.com/ericthehacker/magento2-configscopehints.git
 
 # require module
-$ composer require ericthehacker/magento2-configscopehints
+$ composer require ericthehacker/magento2-configscopehints:~2.1
 
 # enable module
 $ php -f bin/magento module:enable EW_ConfigScopeHints 
