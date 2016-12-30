@@ -110,7 +110,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $field = $this->configStructure->getElement($path);
 
         if($field->getOptions()) {
-            //@todo: test all this
             $labels = []; //reset labels so we can add human-friendly labels
 
             $optionsByValue = [];
@@ -254,6 +253,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
                     break;
                 case 'store':
+                    /** @var \Magento\Store\Model\Store $store */
                     $store = $this->storeManager->getStore($scopeId);
                     $website = $store->getWebsite();
                     $url = $this->urlBuilder->getUrl(
