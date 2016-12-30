@@ -21,16 +21,29 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @var \Magento\Backend\Model\Url
      */
     protected $urlBuilder;
+    /**
+     * @var \Magento\Config\Model\Config\Structure\SearchInterface
+     */
+    protected $configStructure;
+    /**
+     * @var \Magento\Framework\Escaper
+     */
+    protected $escaper;
 
     /**
+     * Data constructor.
      * @param \Magento\Framework\App\Helper\Context $context
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param \Magento\Backend\Model\Url $urlBuilder
+     * @param \Magento\Config\Model\Config\Structure\SearchInterface $configStructure
+     * @param \Magento\Framework\Escaper $escaper
      */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Backend\Model\Url $urlBuilder
+        \Magento\Backend\Model\Url $urlBuilder,
+        \Magento\Config\Model\Config\Structure\SearchInterface $configStructure,
+        \Magento\Framework\Escaper $escaper
     ) {
         parent::__construct($context);
 
@@ -40,6 +53,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         // an instance of \Magento\Framework\Url instead of \Magento\Backend\Model\Url, we must explicitly request it
         // via DI.
         $this->urlBuilder = $urlBuilder;
+        $this->configStructure = $configStructure;
+        $this->escaper = $escaper;
     }
 
     /**
@@ -79,17 +94,40 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /**
-     * Gets human-friendly display value for given config path
+     * Gets human-friendly display value(s) for given config path
      *
      * @param string $path
      * @param string $contextScope
      * @param string|int $contextScopeId
-     * @return string
+     * @return array
      */
     public function getConfigDisplayValue($path, $contextScope, $contextScopeId) {
         $value = $this->_getConfigValue($path, $contextScope, $contextScopeId);
 
-        return $value; //@todo
+        $labels = [$value]; //default labels to raw value
+
+        /** @var \Magento\Config\Model\Config\Structure\Element\Field $field */
+        $field = $this->configStructure->getElement($path);
+
+        if($field->getOptions()) {
+            //@todo: test all this
+            $labels = []; //reset labels so we can add human-friendly labels
+
+            $optionsByValue = [];
+            foreach($field->getOptions() as $option) {
+                $optionsByValue[$option['value']] = $option;
+            }
+
+            $values = explode(',', $value);
+
+            foreach($values as $valueInstance) {
+                $labels[] = isset($optionsByValue[$valueInstance])
+                    ? $optionsByValue[$valueInstance]['label'] : $valueInstance;
+
+            }
+        }
+
+        return $labels;
     }
 
     /**
@@ -159,6 +197,31 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /**
+     * Get HTML formatted value label(s)
+     *
+     * @param array $labels
+     * @return string
+     */
+    protected function getFormattedValueLabels(array $labels) {
+        if(count($labels) == 1) {
+            //if only one value, simply return it
+            return '<span class="override-value-hint-label">' .
+                nl2br($this->escaper->escapeHtml($labels[0])) .
+                '</span>';
+        }
+
+        $formattedLabels = '';
+
+        foreach($labels as $label) {
+            $formattedLabels .= '<li class="override-value-hint-label">' .
+                nl2br($this->escaper->escapeHtml($label)) .
+            '</li>';
+        }
+
+        return '<ul class="override-value-hint-labels">' . $formattedLabels . '</ul>';
+    }
+
+    /**
      * Get HTML output for override hint UI
      *
      * @param string $section
@@ -216,7 +279,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
                 '<dt class="override-scope ' . $scope . '" title="'. __('Click to see overridden value') .'">'
                     . $scopeLabel .
                 '</dt>' .
-                '<dd class="override-value">' . $valueLabel . '</dd>';
+                '<dd class="override-value">' . $this->getFormattedValueLabels($valueLabel) . '</dd>';
         }
 
         $formatted .= '</dl></div>';
