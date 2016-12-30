@@ -13,11 +13,34 @@
 
     .override-scope {
         cursor: pointer;
+        line-height: 40px; //improve touch experience
+        position: relative;
+
+        &:before {
+            font-family: "Admin Icons";
+            font-style: normal;
+            content: '\e616';
+            font-size: 1.8rem;
+            position: absolute;
+            right: 1.3rem;
+        }
+
+        &.open {
+            border-bottom: none; //remove native accordion border so following .override-value can have it
+
+            &:before {
+                content: '\e615'; //set icon to close arrow
+            }
+        }
     }
 
     .override-value {
         &.visible {
             display: block;
         }
+
+        //move native accordion left whitespace from margin to padding
+        margin-left: 0;
+        padding-left: 40px;
     }
 }
