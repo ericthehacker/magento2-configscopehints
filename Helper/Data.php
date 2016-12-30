@@ -145,10 +145,6 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
         $currentValue = $this->_getConfigValue($path, $contextScope, $contextScopeId);
 
-        if(is_null($currentValue)) {
-            return array(); //something is off, let's bail gracefully.
-        }
-
         $overridden = array();
 
         switch($contextScope) {
