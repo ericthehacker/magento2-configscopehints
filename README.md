@@ -55,7 +55,7 @@ Along with the alert message, a detailed list of the exact scope(s) that overrid
 
 ## Compatibility and Technical Notes
 
-Version 3.0.0 of this module has been tested against Magento 2.1.x. It's likely compatible with 2.0.x as well, but this is untested.
+As of version 3.0.0 of this module has been tested against Magento 2.1.x. It's likely compatible with 2.0.x as well, but this is untested.
 
 > NOTE: For known compatibility with 2.0.x, check out version [2.1.0][2.1.0] of the module.
 
@@ -66,6 +66,13 @@ Version 3.0.0 of this module has been tested against Magento 2.1.x. It's likely 
 When used on Magento 2.1.3, the module can produce a false positive when viewing a website scope. If a given config value has been overridden at this website scope, any children store views which have "Use Website" set for the value will incorrectly show as being overridden. 
 
 This is a known [core bug][MAGETWO-62648].
+
+### Non-standard Fieldset Renderers
+
+Store config groups which use non-standard fieldset renderers are currently ignored. Of the native store config fields, the following exhibit this trait.
+
+* Advanced -> Advanced -> Disable Modules Output
+* Sales -> Payment Methods
 
 
 [2.1.0]: https://github.com/ericthehacker/magento2-configscopehints/releases/tag/v2.1.0
