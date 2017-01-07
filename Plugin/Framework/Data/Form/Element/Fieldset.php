@@ -30,6 +30,21 @@ class Fieldset
     }
 
     /**
+     * Check for indexes of $config that must be present
+     * for current override detection logic.
+     *
+     * @param array $config
+     * @return bool
+     */
+    protected function isConfigValid(array $config) {
+        return isset($config['field_config'])
+            && isset($config['field_config']['path'])
+            && isset($config['field_config']['id'])
+            && isset($config['scope'])
+            && isset($config['scope_id']);
+    }
+
+    /**
      * If field is overwritten at more specific scope(s),
      * set field hint with this info.
      *
@@ -43,19 +58,21 @@ class Fieldset
      * @return \Magento\Framework\Data\Form\Element\AbstractElement
      */
     public function aroundAddField(OriginalFieldset $subject, callable $proceed, $elementId, $type, $config, $after = false, $isAdvanced = false) {
-        $path = $config['field_config']['path'] . '/' . $config['field_config']['id'];
-        $scope = $config['scope'];
-        $scopeId = $config['scope_id'];
-        $section = $this->request->getParam('section'); //@todo: don't talk to request directly
+        if($this->isConfigValid($config)) {
+            $path = $config['field_config']['path'] . '/' . $config['field_config']['id'];
+            $scope = $config['scope'];
+            $scopeId = $config['scope_id'];
+            $section = $this->request->getParam('section'); //@todo: don't talk to request directly
 
-        $overriddenLevels = $this->helper->getOverriddenLevels(
-            $path,
-            $scope,
-            $scopeId
-        );
+            $overriddenLevels = $this->helper->getOverriddenLevels(
+                $path,
+                $scope,
+                $scopeId
+            );
 
-        if(!empty($overriddenLevels)) {
-            $config['comment'] .= $this->helper->formatOverriddenScopes($section, $overriddenLevels);
+            if(!empty($overriddenLevels)) {
+                $config['comment'] .= $this->helper->formatOverriddenScopes($section, $overriddenLevels);
+            }
         }
 
         return $proceed($elementId, $type, $config, $after, $isAdvanced);
