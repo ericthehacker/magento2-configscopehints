@@ -6,7 +6,7 @@
         "magento/module-config": "*"
     },
     "type": "magento2-module",
-    "version": "3.1.1",
+    "version": "3.1.2",
     "autoload": {
         "files": [ "registration.php" ],
         "psr-4": {
