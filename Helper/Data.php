@@ -109,8 +109,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $value = $this->_getConfigValue($path, $contextScope, $contextScopeId);
 
         if (is_array($value)) {
-            $firstKey = array_keys($value)[0];
-            $labels = [$value[$firstKey]];
+            $labels = [current($value)];
         } else {
             $labels = [$value]; //default labels to raw value
         }
@@ -177,11 +176,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
                     $websiteValue = $this->_getConfigValue($path, self::WEBSITE_SCOPE_CODE, $websiteId);
 
                     if (is_array($currentValue) && is_array($websiteValue)) {
-                        $firstKeyCurrent = array_keys($currentValue)[0];
-                        $firstKeyWebsite = array_keys($websiteValue)[0];
-
-                        $websiteValueArray = $websiteValue[$firstKeyWebsite];
-                        $currentValueArray = $currentValue[$firstKeyCurrent];
+                        $websiteValueArray = [current($websiteValue)];
+                        $currentValueArray = [current($currentValue)];
                         if ($websiteValueArray != $currentValueArray) {
                             $overridden[] = [
                                 'scope' => 'website',
@@ -203,10 +199,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
                     foreach ($website[self::STORE_VIEW_SCOPE_CODE] as $storeId) {
                         $value = $this->_getConfigValue($path, self::STORE_VIEW_SCOPE_CODE, $storeId);
                         if (is_array($currentValue) && is_array($value)) {
-                            $firstKeyCurrent = array_keys($currentValue)[0];
-                            $firstKeyStore = array_keys($value)[0];
-
-                            $storeValueArray = $value[$firstKeyStore];
+                            $storeValueArray = [current($value)];
                             if ($storeValueArray != $websiteValueArray) {
                                 $overridden[] = [
                                     'scope' => 'store',
