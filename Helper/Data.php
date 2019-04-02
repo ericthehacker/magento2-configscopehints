@@ -113,15 +113,25 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             $labels = []; //reset labels so we can add human-friendly labels
 
             $optionsByValue = [];
-            foreach($field->getOptions() as $option) {
-                $optionsByValue[$option['value']] = $option;
+            foreach($field->getOptions() as $optionValue => $option) {
+                switch (true) {
+                    case is_array($option):
+                        $optionValue = isset($option['value']) ? $option['value'] : $optionValue;
+                        $optionLabel = isset($option['label']) ? $option['label'] : '';
+                        break;
+                    case $option instanceof \Magento\Framework\Phrase:
+                        $optionLabel = $option;
+                        break;
+                }
+
+                $optionsByValue[$optionValue] = $optionLabel;
             }
 
             $values = explode(',', $value);
 
             foreach($values as $valueInstance) {
                 $labels[] = isset($optionsByValue[$valueInstance])
-                    ? $optionsByValue[$valueInstance]['label'] : $valueInstance;
+                    ? $optionsByValue[$valueInstance] : $valueInstance;
 
             }
         }
