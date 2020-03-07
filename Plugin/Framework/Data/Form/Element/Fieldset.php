@@ -63,6 +63,7 @@ class Fieldset
             $scope = $config['scope'];
             $scopeId = $config['scope_id'];
             $section = $this->request->getParam('section'); //@todo: don't talk to request directly
+            $config['comment'] .= '<p>' . $this->helper->getConfigUpdatedAtLabel($path, $scopeId, $scopeId) . '</p>';
 
             $overriddenLevels = $this->helper->getOverriddenLevels(
                 $path,
