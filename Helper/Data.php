@@ -114,7 +114,9 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
             $optionsByValue = [];
             foreach($field->getOptions() as $option) {
-                $optionsByValue[$option['value']] = $option;
+                if (isset($option['value'])) {
+                    $optionsByValue[$option['value']] = $option;
+                }
             }
 
             $values = explode(',', $value);
