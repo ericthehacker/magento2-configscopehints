@@ -29,21 +29,28 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @var \Magento\Framework\Escaper
      */
     protected $escaper;
+    /**
+     * @var \Magento\Framework\App\ResourceConnection
+     */
+    private $resourceConnection;
 
     /**
      * Data constructor.
+     *
      * @param \Magento\Framework\App\Helper\Context $context
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager
      * @param \Magento\Backend\Model\Url $urlBuilder
      * @param \Magento\Config\Model\Config\Structure\SearchInterface $configStructure
      * @param \Magento\Framework\Escaper $escaper
+     * @param \Magento\Framework\App\ResourceConnection $resourceConnection
      */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Backend\Model\Url $urlBuilder,
         \Magento\Config\Model\Config\Structure\SearchInterface $configStructure,
-        \Magento\Framework\Escaper $escaper
+        \Magento\Framework\Escaper $escaper,
+        \Magento\Framework\App\ResourceConnection $resourceConnection
     ) {
         parent::__construct($context);
 
@@ -55,6 +62,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $this->urlBuilder = $urlBuilder;
         $this->configStructure = $configStructure;
         $this->escaper = $escaper;
+        $this->resourceConnection = $resourceConnection;
     }
 
     /**
@@ -79,6 +87,31 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         }
 
         return $tree;
+    }
+
+    /**
+     * Wrapper method to get config updated_at at path, scope, and scope code provided
+     *
+     * @param string $path
+     * @param string $contextScope
+     * @param string|int $contextScopeId
+     * @return string
+     */
+    public function getConfigUpdatedAtLabel($path, $contextScope, $contextScopeId) {
+        $connection = $this->resourceConnection->getConnection();
+        if ($contextScope === 'store') {
+            $contextScope = 'stores';
+        } elseif ($contextScope === 'website') {
+            $contextScope = 'websites';
+        }
+
+        $select = $connection->select()->from('core_config_data', 'updated_at')
+            ->where('path = ?', $path)
+            ->where('scope = ?', $contextScope)
+            ->where('scope_id = ?', $contextScopeId);
+        $updatedAt = $connection->fetchOne($select);
+        $updatedAtLabel = $updatedAt ? 'Updated at: ' . $updatedAt : 'This is a system value';
+        return '<span class="config-updated-at">' . $updatedAtLabel . '</span>';
     }
 
     /**
@@ -156,7 +189,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
                             'scope'     => 'store',
                             'scope_id'  => $storeId,
                             'value' => $value,
-                            'display_value' => $this->getConfigDisplayValue($path, self::STORE_VIEW_SCOPE_CODE, $storeId)
+                            'display_value' => $this->getConfigDisplayValue($path, self::STORE_VIEW_SCOPE_CODE, $storeId),
+                            'updated_at' => $this->getConfigUpdatedAtLabel($path, self::STORE_VIEW_SCOPE_CODE, $storeId)
                         );
                     }
                 }
@@ -169,7 +203,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
                             'scope'     => 'website',
                             'scope_id'  => $websiteId,
                             'value' => $websiteValue,
-                            'display_value' => $this->getConfigDisplayValue($path, self::WEBSITE_SCOPE_CODE, $websiteId)
+                            'display_value' => $this->getConfigDisplayValue($path, self::WEBSITE_SCOPE_CODE, $websiteId),
+                            'updated_at' => $this->getConfigUpdatedAtLabel($path, self::WEBSITE_SCOPE_CODE, $websiteId)
                         );
                     }
 
@@ -180,7 +215,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
                                 'scope'     => 'store',
                                 'scope_id'  => $storeId,
                                 'value' => $value,
-                                'display_value' => $this->getConfigDisplayValue($path, self::STORE_VIEW_SCOPE_CODE, $storeId)
+                                'display_value' => $this->getConfigDisplayValue($path, self::STORE_VIEW_SCOPE_CODE, $storeId),
+                                'updated_at' => $this->getConfigUpdatedAtLabel($path, self::STORE_VIEW_SCOPE_CODE, $storeId)
                             );
                         }
                     }
@@ -233,6 +269,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             $scopeId = $overriddenScope['scope_id'];
             $value = $overriddenScope['value'];
             $valueLabel = $overriddenScope['display_value'];
+            $updatedAt = $overriddenScope['updated_at'];
             $scopeLabel = $scopeId;
 
             $url = '#';
@@ -275,7 +312,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
                 '<dt class="override-scope ' . $scope . '" title="'. __('Click to see overridden value') .'">'
                     . $scopeLabel .
                 '</dt>' .
-                '<dd class="override-value">' . $this->getFormattedValueLabels($valueLabel) . '</dd>';
+                '<dd class="override-value">' . $this->getFormattedValueLabels($valueLabel) . $updatedAt . '</dd>';
         }
 
         $formatted .= '</dl></div>';
