@@ -125,7 +125,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
                 $optionsByValue[$option['value']] = $option;
             }
 
-            $values = explode(',', $value);
+            $values = explode(',', (string) $value);
 
             foreach ($values as $valueInstance) {
                 $labels[] = isset($optionsByValue[$valueInstance])
